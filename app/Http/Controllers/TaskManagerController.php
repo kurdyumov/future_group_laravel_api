@@ -65,21 +65,34 @@ class TaskManagerController extends Controller
     public function get_tasks(Request $request) {
         $params = $request->all(['search', 'sort', 'page', 'per_page']);
         $res = DB::table('tasks');
+
         if ($params['search']) {
             $res = $res->where(['title'=>$params['search']]);
         }
-        if ($params['sort'] and in_array($params['sort'], ['due_date', 'create_date'])) {
+
+        if ($params['sort'] && in_array($params['sort'], ['due_date', 'create_date'])) {
             $direction = ($params['sort'][0] == '-')?SortDirection::Descending:SortDirection::Ascending;
             $res = $res->orderBy(ltrim($params['sort'], '+-'), $direction);
         }
-        if ($params['per_page'] && intval($params['per_page']) >= 0 && intval($params['per_page']) < 1000) {
-            if ($params['per_page'] && intval($params['per_page']) >= 0 && intval($params['per_page']) < 1000)
+
+        if (
+            $params['per_page']
+            && intval($params['per_page']) >= 0
+            && intval($params['per_page']) < 1000
+        ) {
+            if (
+                $params['per_page']
+                && intval($params['per_page']) >= 0
+                && intval($params['per_page']) < 1000
+            ) {
                 $res = $res->paginate(
                     $params['per_page']?intval($params['per_page']):10, ['*'], 'page', intval($params['page'])
                 )->items();
+            }
         } else {
             $res = $res->get();
         }
+
         return response()->json($res);
     }
 
@@ -214,6 +227,10 @@ class TaskManagerController extends Controller
                 content: new OA\JsonContent(
 
                 )
+            ),
+            new OA\Response(
+                response: 400,
+                description: "Failed to perform SQL"
             )
         ]
     )]
