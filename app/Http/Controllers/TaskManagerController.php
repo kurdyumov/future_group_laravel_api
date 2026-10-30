@@ -55,9 +55,6 @@ class TaskManagerController extends Controller
                     type: 'array',
                     items: new OA\Items(ref: '#/components/schemas/TaskResource')
                 )
-                // content: new OA\JsonContent(
-                //     ref: '#/components/schemas/TasksCollection'
-                // )
             ),
             new OA\Response(
                 response: 400,
@@ -75,10 +72,11 @@ class TaskManagerController extends Controller
             $direction = ($params['sort'][0] == '-')?SortDirection::Descending:SortDirection::Ascending;
             $res = $res->orderBy(ltrim($params['sort'], '+-'), $direction);
         }
-        if ($params['page']) {
-            $res = $res->paginate(
-                $params['per_page']?intval($params['per_page']):10, ['*'], 'page', intval($params['page'])
-            )->items();
+        if ($params['per_page'] && intval($params['per_page']) >= 0 && intval($params['per_page']) < 1000) {
+            if ($params['per_page'] && intval($params['per_page']) >= 0 && intval($params['per_page']) < 1000)
+                $res = $res->paginate(
+                    $params['per_page']?intval($params['per_page']):10, ['*'], 'page', intval($params['page'])
+                )->items();
         } else {
             $res = $res->get();
         }
@@ -199,12 +197,6 @@ class TaskManagerController extends Controller
         path: "/api/tasks/{id}",
         summary: "Delete a specific task by ID",
         tags: ['Posts'],
-        // requestBody: new OA\RequestBody(
-        //     required: true,
-        //     content: new OA\JsonContent(
-
-        //     )
-        // ),
         parameters: [
             new OA\Parameter(
                 parameter: 'id',
