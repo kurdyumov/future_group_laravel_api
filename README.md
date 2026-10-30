@@ -1,5 +1,5 @@
 # Тестовый REST API
-[Техническое задание](https://github.com/fugr-ru/php)
+[Техническое задание](https://github.com/fugr-ru/php)<br>
 Исполнитель: Курдюмов Илья Константинович
 
 ## Введение
@@ -23,3 +23,40 @@
 
 Имейте в виду, что папка с Laravel проектом должен быть на одном уровне с docker-compose.yaml и Dockerfile
 
+## docker-compose.yaml
+'''
+services:
+  app:
+    build: .
+    working_dir: /var/www/laravel
+    volumes:
+      - .:/var/www
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    command: php -S 0.0.0.0:9000 -t public
+
+  db:
+    image: mysql:8.4
+    volumes:
+      - dbdata:/var/lib/mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+
+volumes:
+  dbdata:
+'''
