@@ -141,7 +141,7 @@ class TaskManagerController extends Controller
         ),
         responses: [
             new OA\Response(
-                response: 200,
+                response: 204,
                 description: "Task created successfully",
                 content: new OA\JsonContent(
                     ref: '#/components/schemas/TaskResource'
@@ -162,7 +162,7 @@ class TaskManagerController extends Controller
             $search)
         );
         $id = DB::table('tasks')->insertGetId($args);
-        return response()->json(['id'=>$id, "message"=> "Task created successfully"]);
+        return response()->json(['id'=>$id, "message"=> "Task created successfully"], 204);
     }
 
     #[OA\Put(
@@ -203,7 +203,7 @@ class TaskManagerController extends Controller
         $data = $request->all();
         unset($data['id']);
         DB::table('tasks')->where(['id'=>$id])->update($data);
-        return response()->json(['id'=>$id, 'message'=>'Task updated successfully']);
+        return response()->json(['id'=>$id, 'message'=>'Task updated successfully'], 204);
     }
 
     #[OA\Delete(
@@ -236,6 +236,6 @@ class TaskManagerController extends Controller
     )]
     public function delete_task(Request $request, $id) {
         DB::table('tasks')->delete($id);
-        return response(['id'=>$id, 'message'=>'Task deleted successfully']);
+        return response(['id'=>$id, 'message'=>'Task deleted successfully'], 204);
     }
 }

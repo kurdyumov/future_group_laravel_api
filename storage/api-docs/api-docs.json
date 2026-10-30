@@ -91,7 +91,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "Task created successfully",
                         "content": {
                             "application/json": {
@@ -215,6 +215,9 @@
                                 "schema": {}
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Failed to perform SQL"
                     }
                 }
             }
