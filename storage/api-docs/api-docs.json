@@ -1,0 +1,279 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Kurdyumov API",
+        "description": "Тестовый API на проверку во Фьюче",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/tasks": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get a list of tasks",
+                "operationId": "cd731b095ea1625210bff59a1ec0ae07",
+                "parameters": [
+                    {
+                        "parameter": "search",
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search tasks by \"title\"",
+                        "schema": {
+                            "type": "string",
+                            "example": "задача"
+                        }
+                    },
+                    {
+                        "parameter": "sort",
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Filters to sort by (create_date/due_date)",
+                        "schema": {
+                            "type": "string",
+                            "example": "-create_date"
+                        }
+                    },
+                    {
+                        "parameter": "page",
+                        "name": "page",
+                        "in": "query",
+                        "description": "Sets a page number if \"per_page\" is set",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "parameter": "per_page",
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Sets how much items per page come",
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TaskResource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to perform SQL"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new task",
+                "operationId": "c23448b3d6a3e2bda86538ab18b915d6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TaskResource"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Task created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to perform SQL"
+                    }
+                }
+            }
+        },
+        "/api/tasks/{id}": {
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get a specific task by ID",
+                "operationId": "00c60731b75d1f3cc61f3c8f5f5109ca",
+                "parameters": [
+                    {
+                        "parameter": "id",
+                        "name": "id",
+                        "in": "path",
+                        "description": "Pass an ID of row to obtain",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get a specific task by ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to perform SQL"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update a specific task by ID",
+                "operationId": "2b9b2377b595b2c2f4731f410846e309",
+                "parameters": [
+                    {
+                        "parameter": "id",
+                        "name": "id",
+                        "in": "path",
+                        "description": "Pass an ID of row to obtain",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TaskResource"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Task updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to perform SQL"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete a specific task by ID",
+                "operationId": "137e9f31d8e2867f5405fb91fbece067",
+                "parameters": [
+                    {
+                        "parameter": "id",
+                        "name": "id",
+                        "in": "path",
+                        "description": "Pass an ID of row to obtain",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Task deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TaskResource": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "New task"
+                    },
+                    "description": {
+                        "type": "text",
+                        "example": "A very special task which was expected to be done yesterday"
+                    },
+                    "create_date": {
+                        "type": "date-time",
+                        "example": "2025-01-20T15:00:00"
+                    },
+                    "due_date": {
+                        "type": "date-time",
+                        "example": "2025-01-20T15:00:00"
+                    },
+                    "priority": {
+                        "type": "string",
+                        "example": "срочный"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "Работа"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "просрочено"
+                    }
+                },
+                "type": "object"
+            },
+            "TasksResource": {
+                "title": "TasksCollection",
+                "description": "Collection of tasks",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TaskResource"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Posts",
+            "description": "Posts"
+        }
+    ]
+}
