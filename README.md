@@ -23,8 +23,8 @@
 
 Имейте в виду, что папка с Laravel проектом должен быть на одном уровне с docker-compose.yaml и Dockerfile
 
-## docker-compose.yaml
-'''
+## Пример docker-compose.yaml
+```
 services:
   app:
     build: .
@@ -59,4 +59,27 @@ services:
 
 volumes:
   dbdata:
-'''
+```
+
+## Пример Dockerfile
+```
+FROM php:8.4-fpm
+
+RUN apt-get update && apt-get install -y \
+    git \
+    zip \
+    unzip \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libsqlite3-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd \
+    && pecl install xdebug && docker-php-ext-enable xdebug
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/laravel
+
+CMD ["php", "-S", "0.0.0.0:9000", "-t", "public"]
+```
