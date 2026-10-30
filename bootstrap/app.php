@@ -30,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'title'=>'Faield to perform SQL',
                     'status'=>400,
                     'detail'=>$e->errorInfo[2],
-                    'instance'=>$rq->decodedPath(),
+                    'instance'=>$rq->decodedPath()
                 ], 400);
             }
             else if ($e instanceof NotFoundHttpException) {

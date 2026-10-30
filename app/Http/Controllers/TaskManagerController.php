@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tasks;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -11,9 +12,8 @@ use SortDirection;
 class TaskManagerController extends Controller
 {
     public function get_tasks(Request $request) {
-        $params = $request->all(['search', 'sort']);
+        $params = $request->all(['search', 'sort', 'page', 'per_page']);
         $res = DB::table('tasks');
-
         if ($params['search']) {
             $res = $res->where(['title'=>$params['search']]);
         }
@@ -21,8 +21,13 @@ class TaskManagerController extends Controller
             $direction = ($params['sort'][0] == '-')?SortDirection::Descending:SortDirection::Ascending;
             $res = $res->orderBy(ltrim($params['sort'], '+-'), $direction);
         }
-
-        $res = $res->get();
+        if ($params['page']) {
+            $res = $res->paginate(
+                $params['per_page']?intval($params['per_page']):10, ['*'], 'page', intval($params['page'])
+            )->items();
+        } else {
+            $res = $res->get();
+        }
         return response()->json($res);
     }
 
@@ -32,16 +37,14 @@ class TaskManagerController extends Controller
     }
 
     public function post_task(Request $request) {
-        $task = $request->all();
-        $id = DB::table('tasks')->insertGetId([
-            'title'=>$task['title'],
-            'description'=>$task['description'],
-            'due_date'=>$task['due_date'],
-            'create_date'=>$task['create_date'],
-            'priority'=>$task['priority'],
-            'category'=>$task['category'],
-            'status'=>$task['status'],
-        ]);
+        $search = ['title', 'description', 'due_date', 'create_date', 'priority', 'category', 'status'];
+        $task = $request->all($search);
+        $args = array_combine(
+            $search,
+            array_map(fn ($field) => $task[$field],
+            $search)
+        );
+        $id = DB::table('tasks')->insertGetId($args);
         return response()->json(['id'=>$id, "message"=> "Task created successfully"]);
     }
 
